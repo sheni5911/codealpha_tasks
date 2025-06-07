@@ -1,49 +1,50 @@
-# codealpha_tasks
 import random
 
+def choose_word():
+    # Lista de palabras posibles
+    words = ['python', 'hangman', 'challenge', 'programming', 'developer', 'artificial', 'intelligence']
+    return random.choice(words)
+
+def display_word(secret_word, guessed_letters):
+    # Muestra las letras adivinadas o _ si no se han adivinado
+    return ' '.join([letter if letter in guessed_letters else '_' for letter in secret_word])
+
 def hangman():
-    words = ["python", "programming", "hangman", "challenge", "openai"]
-    word = random.choice(words)
-    guessed_letters = []
-    tries = 6
+    secret_word = choose_word()  # Palabra secreta elegida aleatoriamente
+    guessed_letters = set()      # Letras adivinadas hasta ahora
+    tries = 6                    # Número de intentos permitidos
 
-    print("Welcome to Hangman!")
-    print("_ " * len(word))
+    print("🎮 ¡Bienvenido al juego del Ahorcado!")
+    print(f"La palabra tiene {len(secret_word)} letras.")
 
+    # Bucle del juego
     while tries > 0:
-        guess = input("Guess a letter: ").lower()
+        print("\nPalabra: ", display_word(secret_word, guessed_letters))
+        print(f"Intentos restantes: {tries}")
+        guess = input("Adivina una letra: ").lower()
 
         if not guess.isalpha() or len(guess) != 1:
-            print("Please enter a single letter.")
+            print("❌ Por favor ingresa solo una letra.")
             continue
 
         if guess in guessed_letters:
-            print("You already guessed that letter.")
+            print("⚠️ Ya has adivinado esa letra.")
             continue
 
-        guessed_letters.append(guess)
+        guessed_letters.add(guess)
 
-        if guess in word:
-            print("Good guess!")
-        else:
-            print("Wrong guess.")
+        if guess not in secret_word:
+            print("❌ Letra incorrecta.")
             tries -= 1
+        else:
+            print("✅ ¡Bien hecho!")
 
-        display_word = ""
-        for letter in word:
-            if letter in guessed_letters:
-                display_word += letter + " "
-            else:
-                display_word += "_ "
-
-        print("\n" + display_word.strip())
-        print(f"Tries left: {tries}")
-
-        if "_" not in display_word:
-            print("Congratulations, you won!")
+        # ¿Ganó?
+        if all(letter in guessed_letters for letter in secret_word):
+            print("\n🎉 ¡Felicidades! Has adivinado la palabra:", secret_word)
             break
     else:
-        print(f"Sorry, you lost. The word was '{word}'.")
+        print("\n💀 Has perdido. La palabra era:", secret_word)
 
-# Run the game
-hangman()
+if __name__ == "__main__":
+    hangman()
